@@ -602,13 +602,13 @@ defmodule Goth.Token do
   def queue_for_refresh(%__MODULE__{} = token) do
     diff = token.expires - :os.system_time(:seconds)
 
-    if diff < 10 do
+    if diff < 5*60 do
       # just do it immediately
       Task.async(fn ->
         __MODULE__.refresh!(token)
       end)
     else
-      :timer.apply_after((diff - 10) * 1000, __MODULE__, :refresh!, [token])
+      :timer.apply_after((diff - 5*60) * 1000, __MODULE__, :refresh!, [token])
     end
   end
 
